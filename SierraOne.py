@@ -99,7 +99,8 @@ async def machine_info():
         machine_UUID = str(subprocess.check_output(["cat", "/etc/machine-id"]).decode().strip())
     
     elif platform.system() == "Darwin":
-        machine_UUID = str(subprocess.check_output(["ioreg",
+        machine_UUID = str(subprocess.check_output([
+                                                    "ioreg",
                                                     "-d2",
                                                     "-c",
                                                     "IOPlatformExpertDevice",
