@@ -154,10 +154,8 @@ async def shell_input(channel, message):
 
                             i = 1
                             while chunk:
-                                bytes = io.BytesIO(chunk)
-
                                 await message.channel.send(f"Uploading `{message.content[7:]}-{i}`, standby...`")
-                                await message.channel.send(file=discord.File(bytes, filename=f"{message.content[7:]}-{i}"))
+                                await message.channel.send(file=discord.File(io.BytesIO(chunk), filename=f"{message.content[7:]}-{i}"))
                                 
                                 chunk = file.read(7864320)
                                 i += 1
