@@ -2,7 +2,7 @@
 `SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo](https://github.com/berkgoksel/SierraTwo) that works over Slack. The logic is pretty much the same, however the Discord API is cleaner as well as easier to develop with. I find SierraOne to be more successful than It's peer.
 
 # Why?
-The idea is to have a shell the whole team can play around with during a CTF game. Also, we like using Discord as [@ExploitStudio](https://exploit.studio/). The traffic flows only through Discord therefore generating IoC's and rules for Sierra should be harder than your regular reverse shell. Although Sierra could be used for pentesting, I highly discourage you from doing so as Discord keeps record of all chat history which might lead to disclosure of confidential data. It is recommended to pack/crypt the binaries before use. 
+The idea is to have a shell the whole team can play around with during a CTF game. Also, we like using Discord as [@ExploitStudio](https://exploit.studio/). The traffic flows through Discord (and optionally, Mega Upload) therefore generating IoC's and rules for Sierra should be harder than your regular reverse shell. Although Sierra could be used for pentesting, I highly discourage you from doing so. Discord keeps record of all chat history which might lead to disclosure of confidential data. It is recommended to pack/crypt the binaries before use. 
 
 ## Usage
 `SierraOne` only supports Python 3.x.
