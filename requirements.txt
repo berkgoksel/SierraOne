@@ -1,1 +1,3 @@
 discord.py
+mega.py
+pyinstaller
