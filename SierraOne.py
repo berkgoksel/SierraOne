@@ -14,6 +14,8 @@ channel = None
 
 @bot.event
 async def on_ready():
+    global channel
+    
     # Get server name
     guild = bot.get_guild(server_id)
 
@@ -21,9 +23,7 @@ async def on_ready():
     category = await create_category(guild)
 
     # Get a list of the text channels in the server
-    channels = guild.text_channels
-
-    global channel
+    channels = guild.text_channels    
 
     # Create 'sierra-hotel-'
     channel = await create_channel(category, channels)
