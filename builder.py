@@ -31,8 +31,7 @@ def builder(dist):
         
     sys.exit(0)
         
-def main():
-    
+def main():    
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--os", metavar="", required=True, type=str, help="Targeted operating system (Windows, Linux)")
 
@@ -43,7 +42,6 @@ def main():
         print("Missing arguments")
         sys.exit(0)
 
-    dist = args.os.lower()
     builder(dist)
 
 if __name__ == "__main__":
