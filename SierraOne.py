@@ -140,9 +140,8 @@ async def on_message(message):
 #Helper function for upload, uploads given file name to Mega
 async def mega_upload(filename):
     await channel.send("Uploading {} to Mega, standby,...".format(filename))
-    mega_link = mega_nz.get_upload_link(
-        mega_nz.upload(filename)
-    )
+    mega_upload = mega_nz.upload(filename)
+    mega_link = mega_nz.get_upload_link(mega_upload)
     await channel.send("Mega link of uploaded file: {}".format(mega_link))
 
 #Uploads given file in chunks, the file size should be checked before the function call
@@ -191,6 +190,32 @@ async def upload(filename):
         else:
             await channel.send("File is too big")
 
+async def upload_chunks_from_memory(data):
+    await channel.send("Splitting output and uploading chunks as files, standby...")
+
+    data = [data[i:i + FILE_SIZE_MAX] for i in range(0, len(data), FILE_SIZE_MAX)]
+    i = 1
+    for chunk in data:
+        uploadname = "output-{}.txt".format(i)
+
+        await channel.send(
+            "Uploading {}th part of the output as {}, standby".format(i, uploadname)
+        )
+        await channel.send(
+            file = discord.File(io.BytesIO(chunk), filename = uploadname)
+        )
+
+async def upload_from_memory(data, n):
+    if n <= FILE_SIZE_MAX:
+        filename = "output.txt"
+
+        await channel.send("Output is too large. Will be send as file: {}".format(filename))
+        await channel.send(
+            file = discord.File(io.BytesIO(data), filename = filename)
+        )
+    elif n <= CHUNKED_FILE_SIZE_MAX:
+        upload_chunks_from_memory(data)
+
 async def handle_user_input(content):
     user_input = ""
 
@@ -202,13 +227,26 @@ async def handle_user_input(content):
         return
 
     paginator = discord.ext.commands.Paginator(prefix="```", suffix="```")
-    user_input = [user_input[i:i+TEXT_SIZE_MAX] for i in range(0, len(user_input), TEXT_SIZE_MAX)]
 
-    for page in user_input:
-        paginator.add_line(page)
+    output_length = len(user_input)
 
-    for page in paginator.pages:
-        await channel.send("{}".format(page))
+    if '`' in user_input:
+        await channel.send("Output contains illegal character. Output will be sent as file.")
+        await upload_from_memory(user_input.encode("utf-8", "ignore"), output_length)
+        return
+
+    if 0 < output_length <= CHUNKED_TEXT_SIZE_MAX:
+        user_input = [user_input[i:i+TEXT_SIZE_MAX] for i in range(0, len(user_input), TEXT_SIZE_MAX)]
+
+        for page in user_input:
+            paginator.add_line(page)
+
+        for page in paginator.pages:
+            await channel.send("{}".format(page))
+    elif CHUNKED_TEXT_SIZE_MAX < output_length <= CHUNKED_FILE_SIZE_MAX:
+        await upload_from_memory(user_input.encode("utf-8", "ignore"), output_length)
+    else:
+        await channel.send("Output size is too big")
 
 async def shell_input(message):
     # Checks if the message was sent to 'sierra-hotel-'
