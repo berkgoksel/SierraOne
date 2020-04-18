@@ -1,6 +1,0 @@
-# Bot Configuration
-bot_token:        TOKEN
-server_id:        ID
-
-category_prefix:  SierraOne
-channel_prefix:   sierra-hotel-
