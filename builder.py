@@ -42,7 +42,7 @@ def main():
         print("Missing arguments")
         sys.exit(0)
 
-    builder(arsg.os.lower())
+    builder(args.os.lower())
 
 if __name__ == "__main__":
     main()
