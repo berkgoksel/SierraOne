@@ -1,10 +1,10 @@
+import config
 import discord
 from discord.ext import commands
 import os
 import platform
 import subprocess
 import sys
-import yaml
 
 bot = commands.Bot(command_prefix=".")
 
@@ -164,13 +164,13 @@ async def shell_input(channel, message):
 with open("config.yaml") as file:
     settings = yaml.load(file, Loader=yaml.FullLoader)
 
-    # Server ID
-    server_id = settings["server_id"]
+# Server ID
+server_id = config.server_id
 
-    # Category prefix
-    category_prefix = settings["category_prefix"]
+# Category prefix
+category_prefix = config.category_prefix
 
-    # Channel prefix
-    channel_prefix = settings["channel_prefix"]
+# Channel prefix
+channel_prefix = config.channel_prefix
 
-    bot.run(settings["bot_token"])
+bot.run(config.bot_token)
