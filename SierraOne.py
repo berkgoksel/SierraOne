@@ -39,7 +39,10 @@ async def on_ready():
     await send_info.pin()
 
     if config.mega_email == "" and config.mega_password == "":
-        await channel.send("**WARNING**\nMega credentials were not found. All your uploads larger than 7.5 MB will be split into chunks and uploaded over Discord.")
+        await channel.send(
+        "**WARNING**\nMega credentials were not found. All your uploads larger than 7.5 MB"
+        "will be split into chunks and uploaded over Discord."
+        )
 
     else:
         await channel.send("Mega credentials found. All your uploads larger than 7.5 MB will be uploaded to Mega.")
