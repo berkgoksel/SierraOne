@@ -125,10 +125,7 @@ async def machine_info():
 
 @bot.event
 async def on_message(message):
-    if message.author.id == bot.user.id:
-        return
-    
-    else:
+    if message.author.id != bot.user.id:
         await shell_input(channel, message)
 
 
