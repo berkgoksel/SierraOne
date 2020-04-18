@@ -11,7 +11,6 @@ def remove_files():
     os.remove("msdtc.exe.spec")
     rmtree("build")
     rmtree("__pycache__")
-    rmtree("msdtc.exe.spec")
     
 def builder(dist):
     if dist.lower() == "windows":
