@@ -9,7 +9,6 @@ import subprocess
 import sys
 
 bot = commands.Bot(command_prefix=".")
-
 channel = None
 
 
