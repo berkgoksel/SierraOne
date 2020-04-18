@@ -1,11 +1,5 @@
 # SierraOne
-`SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo](https://github.com/berkgoksel/SierraTwo) which works over Slack. The logic is pretty much the same, however the Discord API is cleaner as well as easier to develop with.
-
-## Why?
-The idea is to have a shell the whole team can play around with during a CTF game. Also, we like using Discord as [@ExploitStudio](https://exploit.studio/). The traffic flows through Discord (and optionally, Mega Upload) therefore generating IoC's and rules for Sierra should be harder than your regular reverse shell. 
-
-## Note
-Although Sierra could be used for pentesting, I highly discourage you from doing so. Discord keeps record of all chat history which might lead to disclosure of confidential data. It is recommended to pack/crypt the binaries before use. 
+`SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo][SierraTwo] which works over Slack. The logic is pretty much the same, however the Discord API is cleaner as well as easier to develop with.
 
 ## Usage
 `SierraOne` only supports Python 3.x.
@@ -15,7 +9,6 @@ Although Sierra could be used for pentesting, I highly discourage you from doing
 Not available. Instead, refer to [building](#building) to build an `.exe` for Windows.
 
 #### Linux
-Running SierraOne
 ```
 $ sudo apt install python3-pip
 $ pip3 install -r requirements.txt
@@ -59,21 +52,42 @@ to the `Bot` tab and turn your application into a bot. Then, go to the `OAuth` t
 Finally, copy `Token` in `Bot` tab of [Discord Developer Portal][Discord Developer Portal] and copy `Server ID` from 
 `Widget` tab found on your Discord server's settings and paste the said info to their corresponding places `config.py`.
 
-Optionally, you can integrate [Mega][Mega] in `config.py`, where the bot will upload files larger than 7.5 MB to your Mega 
-account.
+Optionally, you can integrate [Mega][Mega] in `config.py`, where the bot will upload files larger than 7.5 MB to your 
+Mega account. Otherwise, files larger than 7.5 MB will be split into 7.5 MB parts and uploaded over Discord.
+
+## Notes
+- The shells (or rooms in other words) will be created under the predetermined prefix. You can change this prefix in 
+`config.py`.
+- Upon launch, `SierraOne` will connect to the Mega (if the credentials are present) then connect to Discord. Upon 
+connecting to Discord, it'll check the server for a category matching the category prefix. If there are no categories 
+matching the prefix, a category matching the prefix will be created. By default, this is `SierraOne`. Afterwards; in a 
+similar fashion, `SierraOne` will look for channels matching the channel prefix. If there are no channels matching the 
+prefix, `prefix-1` will be created. By default, this is `sierra-hotel-1`. However, if there is a channel (or channels) 
+matching the prefix, `SierraOne` will get the largest number amongst the matching channels and add onto the largest 
+number amongst the channels. That means if `sierra-hotel-5` is the with the largest number amongst all present 
+channels, the next channel will be `sierra-hotel-6`.
+- You can only run one instance of `SierraOne` at a given time. This is due to Discord's API. To circumvent this, you 
+can create multiple applications and 
+- To close your current shell, type `shell_exit` in the channel.
+- Although `SierraOne` could be used for pentesting, it's highly discouraged to do so. This is because Discord keeps 
+records of all chat history, which might lead to disclosure of confidential data. It's recommended to pack/crypt the 
+binaries before use. 
 
 ## Disclaimers
 - This project is for educational purposes only. The developers and contributors are not responsible for any damage 
 that may be caused by this program nor any consequences that may arise.
 - By using this program you accept that the developers and contributors are not responsible if you violate 
-[Discord's Terms of Service][Discord ToS], [Discord's API Terms of Service][Discord API ToS] and [Mega.nz's ToS][Mega ToS].
+[Discord's Terms of Service][Discord ToS], [Discord's API Terms of Service][Discord API ToS] and [Mega's ToS][Mega ToS].
 - With the current permissions of the app, `SierraOne` will have an admin access over your workspace.
 
+## Acknowledgements:
+- Special thanks to [Arszilla][Arszilla] for helping out with the development and testing.
+
+[SierraTwo]:                https://github.com/berkgoksel/SierraTwo
 [Discord Developer Portal]: https://discordapp.com/developers/applications
 [Mega]:                     https://mega.nz
 [Discord ToS]:              https://discordapp.com/terms
 [Discord API ToS]:          https://discordapp.com/developers/docs/legal
 [Mega ToS]:                 https://mega.nz/terms
+[Arszilla]:                 https://twitter.com/Arszilla
 
-## Acknowledgements:
-- Shoutout to @Arszilla for helping out with development and testing.
