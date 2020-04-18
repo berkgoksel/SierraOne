@@ -1,5 +1,5 @@
 # SierraOne
-`SierraOne` is a simple shared reverse shell over Discord.
+`SierraOne` is a simple shared reverse shell over Discord. Based on SierraTwo, that works over Slack. https://github.com/berkgoksel/SierraTwo
 
 ## Usage
 `SierraOne` only supports Python 3.x.
@@ -67,3 +67,6 @@ that may be caused by this program nor any consequences that may arise.
 [Discord ToS]:              https://discordapp.com/terms
 [Discord API ToS]:          https://discordapp.com/developers/docs/legal
 [Mega ToS]:                 https://mega.nz/terms
+
+## Acknowledgements:
+- Shoutout to @Arszilla for helping out with development and testing.
