@@ -1,5 +1,5 @@
 # SierraOne
-`SierraOne` is a simple shared reverse shell over Discord, similar to [SierraTwo][SierraTwo]; which is the Slack equivalent of `SierraOne`.
+`SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo](https://github.com/berkgoksel/SierraTwo) which works over Slack. The idea is to have a shell everyone can play around with during a CTF game. Also, we like using Discord as [@ExploitStudio](https://exploit.studio/).
 
 ## Usage
 `SierraOne` only supports Python 3.x.
@@ -56,6 +56,10 @@ Optionally, you can integrate [Mega][Mega] in `config.py`, where the bot will up
 Mega account. Otherwise, files larger than 7.5 MB will be split into 7.5 MB parts and uploaded over Discord.
 
 ## Notes
+- Although `SierraOne` could be used for pentesting, it's highly discouraged to do so. This is because Discord keeps 
+records of all chat history, which might lead to disclosure of confidential data. It's recommended to pack/crypt the 
+binaries before use. 
+- The traffic flows through Discord (and optionally, Mega Upload) therefore generating IoC's and rules for Sierra should be harder than your regular reverse shell. 
 - The shells (or rooms in other words) will be created under the predetermined prefix. You can change this prefix in 
 `config.py`.
 - Upon launch, `SierraOne` will connect to the Mega (if the credentials are present) then connect to Discord. Upon 
@@ -69,9 +73,8 @@ channels, the next channel will be `sierra-hotel-6`.
 - You can only run one instance of `SierraOne` at a given time. This is due to Discord's API. To circumvent this, you 
 can create multiple applications and 
 - To close your current shell, type `shell_exit` in the channel.
-- Although `SierraOne` could be used for pentesting, it's highly discouraged to do so. This is because Discord keeps 
-records of all chat history, which might lead to disclosure of confidential data. It's recommended to pack/crypt the 
-binaries before use. 
+
+
 
 ## Disclaimers
 - This project is for educational purposes only. The developers and contributors are not responsible for any damage 
