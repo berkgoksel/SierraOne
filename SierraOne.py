@@ -25,7 +25,7 @@ channel = None
 @bot.event
 async def on_ready():
     global channel
-    
+
     # Get server name
     guild = bot.get_guild(server_id)
 
@@ -207,14 +207,13 @@ async def upload_chunks_from_memory(data):
 
 async def upload_from_memory(data, n):
     if n <= FILE_SIZE_MAX:
-        filename = "output.txt"
 
-        await channel.send("Output is too large. Will be send as file: {}".format(filename))
+        filename = "output.txt"
         await channel.send(
             file = discord.File(io.BytesIO(data), filename = filename)
         )
     elif n <= CHUNKED_FILE_SIZE_MAX:
-        upload_chunks_from_memory(data)
+        await upload_chunks_from_memory(data)
 
 async def handle_user_input(content):
     user_input = ""
@@ -222,7 +221,10 @@ async def handle_user_input(content):
     try:
         user_input = os.popen(content).read()
     except:
-        print("OS POPEN exception!")
+        await channel.send("Error reading command output.")
+        return
+
+    if user_input == "":
         await channel.send("The command did not return anything")
         return
 
@@ -235,6 +237,7 @@ async def handle_user_input(content):
         await upload_from_memory(user_input.encode("utf-8", "ignore"), output_length)
         return
 
+
     if 0 < output_length <= CHUNKED_TEXT_SIZE_MAX:
         user_input = [user_input[i:i+TEXT_SIZE_MAX] for i in range(0, len(user_input), TEXT_SIZE_MAX)]
 
@@ -244,9 +247,12 @@ async def handle_user_input(content):
         for page in paginator.pages:
             await channel.send("{}".format(page))
     elif CHUNKED_TEXT_SIZE_MAX < output_length <= CHUNKED_FILE_SIZE_MAX:
+        await channel.send("Output is too large. Will be send as file: {}".format(filename))
         await upload_from_memory(user_input.encode("utf-8", "ignore"), output_length)
+    elif output_length > CHUNKED_FILE_SIZE_MAX:
+        await channel.send("Output size is too big. If you are trying to read a file, try uploading it.")
     else:
-        await channel.send("Output size is too big")
+        await channel.send("Unknown error.")
 
 async def shell_input(message):
     # Checks if the message was sent to 'sierra-hotel-'
