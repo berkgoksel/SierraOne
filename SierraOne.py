@@ -177,7 +177,7 @@ async def upload(filename):
 
     #If user has Mega key, and filesize is less then MEGA_SIZE_MAX,
     #then upload file to Mega
-    if hasMegaKey and filesize <= MEGA_SIZE_MAX:
+    if hasMegaKey and filesize <= MEGA_SIZE_MAX and filesize > FILE_SIZE_MAX:
         await mega_upload(filename)
     else:
         if filesize <= FILE_SIZE_MAX:
