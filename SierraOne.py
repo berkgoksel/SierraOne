@@ -20,6 +20,7 @@ MEGA_SIZE_MAX = 110100480
 bot = commands.Bot(command_prefix=".")
 channel = None
 
+
 @bot.event
 async def on_ready():
     global channel
@@ -144,10 +145,10 @@ async def on_message(message):
 
 
 # Helper function for upload, uploads given file name to Mega
-async def mega_upload():
+async def mega_upload(filename):
     await channel.send(f"Uploading {filename} to Mega, standby...")
     
-    mega_upload = mega_nz.upload()
+    mega_upload = mega_nz.upload(filename)
     mega_link = mega_nz.get_upload_link(mega_upload)
     
     await channel.send(f"Mega link of uploaded file: {mega_link}")
@@ -155,7 +156,7 @@ async def mega_upload():
 
 # Uploads given file in chunks 
 # The file size should be checked before the function call
-async def upload_chunks():
+async def upload_chunks(filename):
     await channel.send("Splitting your file and uploading the parts, "
                        "standby...")
 
@@ -175,12 +176,12 @@ async def upload_chunks():
             i += 1
 
 
-async def upload():
+async def upload(filename):
     hasMegaKey = config.mega_email != "" and config.mega_password != ""
     filesize = 0
 
     try:
-        filesize = path.getsize()
+        filesize = path.getsize(filename)
 
     except FileNotFoundError:
         await channel.send("File not found")
@@ -189,17 +190,17 @@ async def upload():
     # If the user has Mega key, and the filesize is less then 
     # mega_size_max, then upload the file to Mega
     if hasMegaKey and filesize <= MEGA_SIZE_MAX and filesize > FILE_SIZE_MAX:
-        await mega_upload()
+        await mega_upload(filename)
     
     else:
         if filesize <= FILE_SIZE_MAX:
             await channel.send(f"Uploading {filename}, standby...")
-            await channel.send(file=discord.File())
+            await channel.send(file=discord.File(filename))
         
         # If filesize is bigger then 7.5 MB, and less then or equal to 
         # 4*(7.5 MB), upload file chunk by chunk (max 4 chunks)
         elif FILE_SIZE_MAX < filesize <= CHUNKED_FILE_SIZE_MAX:
-            await upload_chunks()
+            await upload_chunks(filename)
         
         else:
             await channel.send("File is too big")
@@ -225,6 +226,9 @@ async def upload_chunks_from_memory(data):
 async def upload_from_memory(data, n):
     if n <= FILE_SIZE_MAX:
 
+        filename = "output.txt"
+        await channel.send("Output is too large. As a result, "
+                           f"your output will be sent as {filename}")
         await channel.send(file=discord.File(BytesIO(data),
                                              filename=filename))
     
@@ -270,8 +274,6 @@ async def handle_user_input(content):
             await channel.send(f"{page}")
     
     elif CHUNKED_TEXT_SIZE_MAX < output_length <= CHUNKED_FILE_SIZE_MAX:
-        await channel.send("Output is too large. As a result, "
-                           f"your output will be sent as {filename}")
         await upload_from_memory(user_input.encode("utf-8", "ignore"),
                                  output_length)
 
@@ -337,8 +339,6 @@ category_prefix = config.category_prefix
 
 # Channel prefix
 channel_prefix = config.channel_prefix
-global filename
-filename = "output.txt"
 
 if config.mega_email != "" and config.mega_password != "":
     mega = Mega()
