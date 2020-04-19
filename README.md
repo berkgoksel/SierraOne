@@ -86,9 +86,6 @@ binaries before use.
 - When uploading with Mega, if the upload takes a while, it's possible that the current shell will be closed and a new 
 shell will be made. `SierraOne` will stop responding in the old channel, but continue to respond in the new channel.
 
-## Acknowledgements:
-- Special thanks to [Arszilla][Arszilla] for helping out with the development and testing.
-
 
 ## Disclaimers
 - This project is for educational purposes only. The developers and contributors are not responsible for any damage 
