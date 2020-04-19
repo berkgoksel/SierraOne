@@ -54,17 +54,16 @@ Finally, copy `Token` in `Bot` tab of [Discord Developer Portal][Discord Develop
 `Widget` tab found on your Discord server's settings and paste the said info to their corresponding places `config.py`.
 
 
-Optionally, you can integrate [Mega][Mega] in `config.py`, where the bot will upload files larger than 7.5 MB to your 
-Mega account. Otherwise, files larger than 7.5 MB will be split into 7.5 MB parts and uploaded over Discord.
+Optionally, you can integrate [Mega][Mega] in `config.py`, where the `SierraOne` will upload files larger than 7.5 MB 
+and up to 105 MB to your Mega account. Otherwise, files larger than 7.5 MB and up to 30 MB will be split into 7.5 MB 
+parts and uploaded over Discord.
 
 ## Notes
+
 - Although `SierraOne` could be used for pentesting, it's highly discouraged to do so. This is because Discord keeps 
-records of all chat history, which might lead to disclosure of confidential data. It's recommended to pack/crypt the 
+records of all chat history, which might lead to disclosure of confidential data. It is recommended to pack/crypt the 
 binaries before use. 
 - The traffic flows through Discord (and optionally, Mega Upload) therefore generating IoC's and rules for Sierra should be harder than your regular reverse shell. 
-- The channels will be created under the predetermined prefix. You can change this prefix in 
-
-`config.py`.
 - Upon launch, `SierraOne` will connect to the Mega (if the credentials are present) then connect to Discord. Upon 
 connecting to Discord, it'll check the server for a category matching the category prefix. If there are no categories 
 matching the prefix, a category matching the prefix will be created. By default, this is `SierraOne`. Afterwards; in a 
@@ -81,6 +80,7 @@ can create multiple applications in [Discord Developer Portal][Discord Developer
 - Although `SierraOne` could be used for pentesting, it's highly discouraged to do so. This is because Discord keeps 
 records of all chat history, which might lead to disclosure of confidential data. It's recommended to pack/crypt the 
 binaries before use. 
+- The channels will be created under the predetermined prefix. You can change this prefix in `config.py`
 
 ## Known Bugs
 - When uploading with Mega, if the upload takes a while, it's possible that the current shell will be closed and a new 
@@ -97,6 +97,7 @@ that may be caused by this program nor any consequences that may arise.
 [Discord's Terms of Service][Discord ToS], [Discord's API Terms of Service][Discord API ToS] and [Mega's ToS][Mega ToS].
 - With the current permissions of the app, `SierraOne` will have an admin access over your workspace.
 
+
 ## Acknowledgements:
 - Special thanks to [Arszilla][Arszilla] for helping out with the development and testing.
 
@@ -107,5 +108,4 @@ that may be caused by this program nor any consequences that may arise.
 [Discord API ToS]:          https://discordapp.com/developers/docs/legal
 [Mega ToS]:                 https://mega.nz/terms
 [Arszilla]:                 https://twitter.com/Arszilla
-
 
