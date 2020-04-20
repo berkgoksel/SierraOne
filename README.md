@@ -1,6 +1,6 @@
 # SierraOne
 
-`SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo](https://github.com/berkgoksel/SierraTwo) which works over Slack. The idea is to have a shell everyone can play around with during a CTF game. Also, we like using Discord as [@ExploitStudio](https://exploit.studio/).
+`SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo](https://github.com/berkgoksel/SierraTwo) which works over Slack. The idea is to have a shell everyone can play around with, during a CTF game. Also, we like using Discord as [@ExploitStudio](https://exploit.studio/).
 
 ## Usage
 `SierraOne` only supports Python 3.x.
@@ -85,9 +85,6 @@ binaries before use.
 ## Known Bugs
 - When uploading with Mega, if the upload takes a while, it's possible that the current shell will be closed and a new 
 shell will be made. `SierraOne` will stop responding in the old channel, but continue to respond in the new channel.
-
-## Acknowledgements:
-- Special thanks to [Arszilla][Arszilla] for helping out with the development and testing.
 
 
 ## Disclaimers
