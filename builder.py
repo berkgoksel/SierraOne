@@ -16,7 +16,7 @@ def builder(dist):
         run(["wine",
              "pyinstaller",
              "--onefile",
-             "--icon=images/msdtc.ico",
+             "--icon=media/msdtc.ico",
              "-n",
              "msdtc.exe",
              "SierraOne.py"])
