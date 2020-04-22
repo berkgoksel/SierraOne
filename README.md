@@ -1,6 +1,8 @@
 # SierraOne
 
-`SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo](https://github.com/berkgoksel/SierraTwo) which works over Slack. The idea is to have a shell everyone can play around with during a CTF. Also, we like using Discord as [@ExploitStudio][ExploitStudio].
+`SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo][SierraTwo] which works over Slack. The 
+idea is to have a shell everyone can play around with during a CTF. Also, we like using Discord as 
+[@ExploitStudio][ExploitStudio].
 
 <p align="center">
   <img src="media/demo.gif" width="525" height="405">
