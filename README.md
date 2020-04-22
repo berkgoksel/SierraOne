@@ -91,7 +91,7 @@ shell will be made. `SierraOne` will stop responding in the old channel, but con
 - This project is for educational purposes only. The developers and contributors are not responsible for any damage 
 that may be caused by this program nor any consequences that may arise.
 - By using this program you accept that the developers and contributors are not responsible if you violate 
-[Discord's Terms of Service][Discord ToS], [Discord's API Terms of Service][Discord API ToS] and [Mega's ToS][Mega ToS].
+[Discord's Terms of Service][Discord ToS], [Discord's API Terms of Service][Discord API ToS] and [Mega Upload's ToS][Mega ToS].
 - With the current permissions of the app, `SierraOne` will have an admin access over your workspace.
 
 
