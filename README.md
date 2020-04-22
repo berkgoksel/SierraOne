@@ -2,7 +2,9 @@
 
 `SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo](https://github.com/berkgoksel/SierraTwo) which works over Slack. The idea is to have a shell everyone can play around with during a CTF. Also, we like using Discord as [@ExploitStudio][ExploitStudio].
 
-![](media/demo.gif)
+<p align="center">
+  <img src="media/demo.gif" width="525" height="405">
+</p>
 
 ## Usage
 `SierraOne` only supports Python 3.x.
