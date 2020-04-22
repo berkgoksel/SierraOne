@@ -1,6 +1,8 @@
 # SierraOne
 
-`SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo](https://github.com/berkgoksel/SierraTwo) which works over Slack. The idea is to have a shell everyone can play around with, during a CTF game. Also, we like using Discord as [@ExploitStudio](https://exploit.studio/).
+`SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo](https://github.com/berkgoksel/SierraTwo) which works over Slack. The idea is to have a shell everyone can play around with during a CTF. Also, we like using Discord as [@ExploitStudio][ExploitStudio].
+
+![](media/demo.gif)
 
 ## Usage
 `SierraOne` only supports Python 3.x.
@@ -91,7 +93,7 @@ shell will be made. `SierraOne` will stop responding in the old channel, but con
 - This project is for educational purposes only. The developers and contributors are not responsible for any damage 
 that may be caused by this program nor any consequences that may arise.
 - By using this program you accept that the developers and contributors are not responsible if you violate 
-[Discord's Terms of Service][Discord ToS], [Discord's API Terms of Service][Discord API ToS] and [Mega's ToS][Mega ToS].
+[Discord's Terms of Service][Discord ToS], [Discord's API Terms of Service][Discord API ToS] and [Mega Upload's ToS][Mega ToS].
 - With the current permissions of the app, `SierraOne` will have an admin access over your workspace.
 
 
@@ -99,10 +101,10 @@ that may be caused by this program nor any consequences that may arise.
 - Special thanks to [Arszilla][Arszilla] for helping out with the development and testing.
 
 [SierraTwo]:                https://github.com/berkgoksel/SierraTwo
+[ExploitStudio]:           https://exploit.studio/
 [Discord Developer Portal]: https://discordapp.com/developers/applications
 [Mega]:                     https://mega.nz
 [Discord ToS]:              https://discordapp.com/terms
 [Discord API ToS]:          https://discordapp.com/developers/docs/legal
 [Mega ToS]:                 https://mega.nz/terms
 [Arszilla]:                 https://twitter.com/Arszilla
-
