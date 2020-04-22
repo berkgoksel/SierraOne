@@ -5,7 +5,7 @@ idea is to have a shell everyone can play around with during a CTF. Also, we lik
 [@ExploitStudio][ExploitStudio].
 
 <p align="center">
-  <img src="media/demo.gif" width="525" height="405">
+  <img src="media/demo.gif">
 </p>
 
 ## Usage
