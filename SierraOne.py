@@ -1,13 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import io
 import os
+import platform
 import subprocess
 import sys
-import platform
-import config
+
 import discord
 from discord.ext import commands
 from mega import Mega
+
+import config
 
 
 TEXT_SIZE_MAX = 1992
