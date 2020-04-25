@@ -1,5 +1,4 @@
 # SierraOne
-
 `SierraOne` is a simple shared reverse shell over Discord, based on [SierraTwo][SierraTwo] which works over Slack. The 
 idea is to have a shell everyone can play around with during a CTF. Also, we like using Discord as 
 [@ExploitStudio][ExploitStudio].
@@ -13,7 +12,7 @@ idea is to have a shell everyone can play around with during a CTF. Also, we lik
 
 ### Direct Usage
 #### Windows
-Not available. Instead, refer to [building](#building) to build an `.exe` for Windows.
+Not available. Instead, refer to [building](#building) to build an executable for Windows.
 
 #### Linux
 ```
@@ -48,7 +47,7 @@ If built for Windows:
 - Executable will automatically minimize and hide itself
 
 If built for Linux:
-- The executable's name will by `system`.
+- The executable's name will be `system`.
 
 ## Configuration
 To use `SierraOne`, create a new server or be a part of a Discord server where you are an admin. Afterwards go to 
@@ -59,17 +58,12 @@ to the `Bot` tab and turn your application into a bot. Then, go to the `OAuth` t
 Finally, copy `Token` in `Bot` tab of [Discord Developer Portal][Discord Developer Portal] and copy `Server ID` from 
 `Widget` tab found on your Discord server's settings and paste the said info to their corresponding places `config.py`.
 
-
 Optionally, you can integrate [Mega][Mega] in `config.py`, where the `SierraOne` will upload files larger than 7.5 MB 
 and up to 105 MB to your Mega account. Otherwise, files larger than 7.5 MB and up to 30 MB will be split into 7.5 MB 
 parts and uploaded over Discord.
 
 ## Notes
-
-- Although `SierraOne` could be used for pentesting, it's highly discouraged to do so. This is because Discord keeps 
-records of all chat history, which might lead to disclosure of confidential data. It is recommended to pack/crypt the 
-binaries before use. 
-- The traffic flows through Discord (and optionally, Mega Upload) therefore generating IoC's and rules for Sierra should be harder than your regular reverse shell. 
+- The category and channels will be created under the predetermined prefix. You can change this prefix in `config.py`
 - Upon launch, `SierraOne` will connect to the Mega (if the credentials are present) then connect to Discord. Upon 
 connecting to Discord, it'll check the server for a category matching the category prefix. If there are no categories 
 matching the prefix, a category matching the prefix will be created. By default, this is `SierraOne`. Afterwards; in a 
@@ -86,26 +80,25 @@ can create multiple applications in [Discord Developer Portal][Discord Developer
 - Although `SierraOne` could be used for pentesting, it's highly discouraged to do so. This is because Discord keeps 
 records of all chat history, which might lead to disclosure of confidential data. It's recommended to pack/crypt the 
 binaries before use. 
-- The channels will be created under the predetermined prefix. You can change this prefix in `config.py`
+- The traffic flows through Discord (and optionally, Mega Upload) therefore generating IoC's and rules for Sierra 
+should be harder than your regular reverse shell. 
 
 ## Known Bugs
 - When uploading with Mega, if the upload takes a while, it's possible that the current shell will be closed and a new 
 shell will be made. `SierraOne` will stop responding in the old channel, but continue to respond in the new channel.
 
-
 ## Disclaimers
 - This project is for educational purposes only. The developers and contributors are not responsible for any damage 
 that may be caused by this program nor any consequences that may arise.
 - By using this program you accept that the developers and contributors are not responsible if you violate 
-[Discord's Terms of Service][Discord ToS], [Discord's API Terms of Service][Discord API ToS] and [Mega Upload's ToS][Mega ToS].
+[Discord's Terms of Service][Discord ToS], [Discord's API Terms of Service][Discord API ToS] and [Mega's ToS][Mega ToS].
 - With the current permissions of the app, `SierraOne` will have an admin access over your workspace.
-
 
 ## Acknowledgements:
 - Special thanks to [Arszilla][Arszilla] for helping out with the development and testing.
 
 [SierraTwo]:                https://github.com/berkgoksel/SierraTwo
-[ExploitStudio]:           https://exploit.studio/
+[ExploitStudio]:            https://exploit.studio/
 [Discord Developer Portal]: https://discordapp.com/developers/applications
 [Mega]:                     https://mega.nz
 [Discord ToS]:              https://discordapp.com/terms
