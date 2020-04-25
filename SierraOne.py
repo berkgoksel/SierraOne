@@ -1,13 +1,16 @@
-import config
-import discord
-from discord.ext import commands
+#!/usr/bin/env python3
+
 import io
-from mega import Mega
 import os
 import platform
 import subprocess
 import sys
 
+import discord
+from discord.ext import commands
+from mega import Mega
+
+import config
 
 TEXT_SIZE_MAX = 1992
 CHUNKED_TEXT_SIZE_MAX = 4 * TEXT_SIZE_MAX
@@ -184,7 +187,7 @@ async def upload(filename):
         filesize = os.path.getsize(filename)
 
     except FileNotFoundError:
-        await channel.send("File not found")
+        await channel.send("File not found.")
         return
 
     # If the user has Mega key, and the filesize is less then 
@@ -203,7 +206,7 @@ async def upload(filename):
             await upload_chunks(filename)
         
         else:
-            await channel.send("File is too big")
+            await channel.send("File is too big.")
 
 
 async def upload_chunks_from_memory(data):
@@ -219,7 +222,7 @@ async def upload_chunks_from_memory(data):
         uploadname = f"output-{i}.txt"
 
         await channel.send(f"Uploading part `{i}` of the output as "
-                           f"`{uploadname}`, standby")
+                           f"`{uploadname}`, standby...")
         await channel.send(file=discord.File(io.BytesIO(chunk),
                                              filename=uploadname))
 
@@ -228,7 +231,7 @@ async def upload_from_memory(data, n):
 
         filename = "output.txt"
         await channel.send("Output is too large. As a result, "
-                           f"your output will be sent as `{filename}`")
+                           f"your output will be sent as `{filename}`.")
         await channel.send(file=discord.File(io.BytesIO(data),
                                              filename=filename))
     
@@ -247,7 +250,7 @@ async def handle_user_input(content):
         return
 
     if user_input == "":
-        await channel.send("The command did not return anything")
+        await channel.send("The command did not return anything.")
         return
 
     paginator = discord.ext.commands.Paginator(prefix="```",
@@ -256,8 +259,8 @@ async def handle_user_input(content):
     output_length = len(user_input)
 
     if '`' in user_input:
-        await channel.send("Output contains illegal character. "
-                           "Output will be sent as file.")
+        await channel.send("Output contains an illegal character. As" 
+                           "a result, the output will be sent as file.")
         await upload_from_memory(user_input.encode("utf-8", "ignore"),
                                  output_length)
         return
@@ -265,7 +268,7 @@ async def handle_user_input(content):
 
     if 0 < output_length <= CHUNKED_TEXT_SIZE_MAX:
         user_input = [user_input[i:i+TEXT_SIZE_MAX]
-                      for i in range(0, len(user_input), TEXT_SIZE_MAX)]
+                      for i in range(0, output_length, TEXT_SIZE_MAX)]
 
         for page in user_input:
             paginator.add_line(page)
@@ -299,7 +302,7 @@ async def shell_input(message):
         os.chdir(message.content.split(" ")[1])
 
         # Notify the user of the directory change
-        await channel.send("`cd` complete")
+        await channel.send("`cd` complete.")
 
     # Check if the message content starts with "shell_exit"
     elif message.content.startswith("shell_exit"):
