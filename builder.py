@@ -18,7 +18,7 @@ def builder(dist):
              "pyarmor",
              "pack",
              "-e",
-             " --onefile --icon media/msdtc.ico",
+             "--onefile --icon media/msdtc.ico",
              "-n",
              "msdtc",
              "SierraOne.py"])
