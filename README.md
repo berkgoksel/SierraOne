@@ -49,7 +49,7 @@ If built for Windows:
 - Executable will automatically minimize and hide itself
 
 If built for Linux:
-- The executable's name will be `system`.
+- The executable's name will be `system`
 
 ## Configuration
 To use `SierraOne`, create a new server or be a part of a Discord server where you are an admin. Afterwards go to 
