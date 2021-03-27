@@ -1,4 +1,5 @@
 discord.py
 mega.py
 pyarmor
+pyinstaller
 pywin32
