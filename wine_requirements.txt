@@ -3,3 +3,4 @@ mega.py
 pyarmor
 pyinstaller
 pywin32
+win32gui
